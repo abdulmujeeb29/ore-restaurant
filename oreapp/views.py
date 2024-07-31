@@ -163,7 +163,7 @@ class RegisterCustomerAPIView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.is_staff = False  # Ensure the user is not marked as staff
+            user.is_staff = False  
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -183,7 +183,7 @@ class RegisterStaffAPIView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.is_staff = True  # Ensure the user is marked as staff
+            user.is_staff = True  
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
