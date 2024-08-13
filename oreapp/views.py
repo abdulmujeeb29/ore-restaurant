@@ -21,7 +21,7 @@ class IsStaffMember(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.user and request.user.is_staff
+        return request.user and request.user.is_staff_member
 
 
 class MenuViewSet(viewsets.ModelViewSet):
@@ -183,7 +183,7 @@ class RegisterStaffAPIView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.is_staff = True  
+            user.is_staff_member = True
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
