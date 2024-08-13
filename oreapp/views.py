@@ -82,9 +82,12 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action in ["list", "retrieve"]:
             # Only staff members can view the list of users or retrieve individual users
             self.permission_classes = [IsStaffMember]
-        else:
+        elif self.action == "profile":
             # Authenticated users can view their own profile
             self.permission_classes = [permissions.IsAuthenticated]
+        elif self.action == "registered_customers":
+            # Only staff members can access this action
+            self.permission_classes = [IsStaffMember]
         return super().get_permissions()
 
     @action(
@@ -97,13 +100,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-    @action(detail=False, methods=["get"], permission_classes=[IsStaffMember])
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[IsStaffMember],
+    )
     def registered_customers(self, request):
         """
         Custom action to retrieve the number of registered customers.
         Only staff members can access this.
         """
-        customers_count = User.objects.filter(is_staff=False).count()
+        customers_count = User.objects.filter(is_staff_member=False).count()
         return Response({"registered_customers": customers_count})
 
 
